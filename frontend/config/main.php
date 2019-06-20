@@ -1,6 +1,7 @@
 <?php
 
-use common\models\User;
+use common\components\BootstrapWeb;
+use common\models\Users;
 use yii\web\Session;
 
 $params = array_merge(
@@ -13,15 +14,18 @@ $params = array_merge(
 return [
     'id' => 'app-frontend',
     'basePath' => dirname(__DIR__),
-    'bootstrap' => ['log'],
+    'bootstrap' => ['log', 'bootstrap'],
     'controllerNamespace' => 'frontend\controllers',
     'components' => [
+        'bootstrap' => [
+            'class' => BootstrapWeb::class
+        ],
         'request' => [
             'csrfParam' => '_csrf-frontend',
             'cookieValidationKey' => $params['cookieValidationKey'],
         ],
         'user' => [
-            'identityClass' => User::class,
+            'identityClass' => Users::class,
             'enableAutoLogin' => true,
             'identityCookie' => [
                 'name' => '_identity',
@@ -50,14 +54,18 @@ return [
         'errorHandler' => [
             'errorAction' => 'site/error',
         ],
-        /*
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
+                '/' => 'site/index',
+                '<action:(about|contact|login)>' => 'site/<action>',
+                '<controller>/page/<page:\d+>/per-page/<per-page:\d+>' => '<controller>/index',
+                '<controller>' => '<controller>/index',
+                '<controller>/<id:\d+>' => '<controller>/view',
+                '<controller>/<id:\d+>/<action>' => '<controller>/<action>',
             ],
         ],
-        */
     ],
     'params' => $params,
 ];

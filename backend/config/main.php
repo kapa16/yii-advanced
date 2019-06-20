@@ -1,6 +1,7 @@
 <?php
 
-use common\models\User;
+use common\components\BootstrapWeb;
+use common\models\Users;
 use yii\web\Session;
 
 $params = array_merge(
@@ -14,15 +15,18 @@ return [
     'id' => 'app-backend',
     'basePath' => dirname(__DIR__),
     'controllerNamespace' => 'backend\controllers',
-    'bootstrap' => ['log'],
+    'bootstrap' => ['log', 'bootstrap'],
     'modules' => [],
     'components' => [
+        'bootstrap' => [
+            'class' => BootstrapWeb::class
+        ],
         'request' => [
             'csrfParam' => '_csrf-backend',
             'cookieValidationKey' => $params['cookieValidationKey'],
         ],
         'user' => [
-            'identityClass' => User::class,
+            'identityClass' => Users::class,
             'enableAutoLogin' => true,
             'identityCookie' => [
                 'name' => '_identity',
