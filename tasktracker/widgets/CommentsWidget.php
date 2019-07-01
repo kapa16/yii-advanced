@@ -22,6 +22,11 @@ class CommentsWidget extends Widget
             'pagination' => [
                 'pageSize' => 10,
             ],
+            'sort' => [
+                'defaultOrder' => [
+                    'created_at' => SORT_DESC,
+                ]
+            ]
         ]);
 
         return $this->render('comments/comments', [

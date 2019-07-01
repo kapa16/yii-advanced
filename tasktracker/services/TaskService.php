@@ -2,6 +2,7 @@
 
 namespace tasktracker\services;
 
+use tasktracker\entities\task\Comments;
 use tasktracker\entities\task\Tasks;
 use tasktracker\forms\task\TaskForm;
 use tasktracker\repositories\StatusRepository;
@@ -22,7 +23,11 @@ class TaskService
      * @param StatusRepository $statuses
      * @param UserRepository $users
      */
-    public function __construct(TaskRepository $tasks, StatusRepository $statuses, UserRepository $users)
+    public function __construct(
+        TaskRepository $tasks,
+        StatusRepository $statuses,
+        UserRepository $users
+    )
     {
         $this->tasks = $tasks;
         $this->statuses = $statuses;
@@ -60,6 +65,13 @@ class TaskService
         );
         $this->tasks->save($task);
         return $task;
+    }
+
+    public function createComment(string $text, int $taskId, int $userId): Comments
+    {
+        $comment = Comments::create($text, $taskId, $userId);
+        $comment->save();
+        return Comments::findOne($comment->id);
     }
 
     public function createFakeData(): void
