@@ -15,10 +15,12 @@ use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\Request;
 use yii\web\Response;
+use yii\web\Session;
 use yii\web\UploadedFile;
 
 class TaskController extends Controller
 {
+    private $session;
     private $service;
     private $request;
     private $tasks;
@@ -28,6 +30,7 @@ class TaskController extends Controller
     public function __construct(
         $id,
         $module,
+        Session $session,
         TaskRepository $tasks,
         TaskService $service,
         Request $request,
@@ -37,6 +40,7 @@ class TaskController extends Controller
     {
         parent::__construct($id, $module, $config);
         $this->tasks = $tasks;
+        $this->session = $session;
         $this->service = $service;
         $this->request = $request;
         $this->comments = $comments;
@@ -109,10 +113,11 @@ class TaskController extends Controller
         if ($form->load($this->request->post()) && $form->validate()) {
             try {
                 $task = $this->service->create($form);
+                $this->session->setFlash('success', 'Task created successfully');
                 return $this->redirect(['view', 'id' => $task->id]);
             } catch (\DomainException $e) {
                 Yii::$app->errorHandler->logException($e);
-                Yii::$app->session->setFlash('error', $e->getMessage());
+                $this->session->setFlash('error', $e->getMessage());
             }
         }
 
@@ -135,10 +140,11 @@ class TaskController extends Controller
         if ($form->load($this->request->post()) && $form->validate()) {
             try {
                 $this->service->edit($task->id, $form);
+                $this->session->setFlash('success', 'Task updated successfully');
                 return $this->redirect(['view', 'id' => $task->id]);
             } catch (\DomainException $e) {
                 Yii::$app->errorHandler->logException($e);
-                Yii::$app->session->setFlash('error', $e->getMessage());
+                $this->session->setFlash('error', $e->getMessage());
             }
         }
 
@@ -152,7 +158,14 @@ class TaskController extends Controller
     public function actionDelete($id): Response
     {
         $task = $this->tasks->get($id);
-        $task->delete();
+        try {
+            $task->delete();
+            $this->session->setFlash('success', 'Task deleted successfully');
+        } catch (\Throwable $e) {
+            Yii::$app->errorHandler->logException($e);
+            $this->session->setFlash('error', $e->getMessage());
+        }
+
         return $this->redirect(['index']);
     }
 

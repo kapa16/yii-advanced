@@ -10,6 +10,7 @@ $params = array_merge(
     require __DIR__ . '/params.php',
     require __DIR__ . '/params-local.php'
 );
+$urlManager = require __DIR__ . './url-manager.php';
 
 return [
     'id' => 'app-frontend',
@@ -54,18 +55,7 @@ return [
         'errorHandler' => [
             'errorAction' => 'site/error',
         ],
-        'urlManager' => [
-            'enablePrettyUrl' => true,
-            'showScriptName' => false,
-            'rules' => [
-                '/' => 'site/index',
-                '<action:(about|contact|login)>' => 'site/<action>',
-                '<controller>/page/<page:\d+>/per-page/<per-page:\d+>' => '<controller>/index',
-                '<controller>' => '<controller>/index',
-                '<controller>/<id:\d+>' => '<controller>/view',
-                '<controller>/<id:\d+>/<action>' => '<controller>/<action>',
-            ],
-        ],
+        'urlManager' => $urlManager,
     ],
     'params' => $params,
 ];

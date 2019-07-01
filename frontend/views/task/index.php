@@ -40,8 +40,8 @@ $this->params['breadcrumbs'][] = $this->title;
         </div>
         <div class="col-md-3">
 
-            <?= Html::a('Create Task', ['create'], ['class' => 'btn btn-success']) ?>
-            <?= Html::a('Fake data', ['fake'], ['class' => 'btn btn-primary']) ?>
+            <?= Html::a('Create Task', ['create'], ['class' => 'btn btn-success', 'name' => 'task-create']) ?>
+            <?= Html::a('Fake data', ['fake'], ['class' => 'btn btn-primary', 'name' => 'fake-data']) ?>
         </div>
         <p class="row"></p>
     </div>
