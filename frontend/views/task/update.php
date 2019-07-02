@@ -26,7 +26,7 @@ $this->params['breadcrumbs'][] = 'Edit';
     ]) ?>
 
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-6 comments">
             <?= CommentsWidget::widget([
                 'task' => $task
             ]) ?>

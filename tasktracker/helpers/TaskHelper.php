@@ -42,7 +42,11 @@ class TaskHelper
     {
         /** @var Tasks $firstTask */
         $firstTask = Tasks::find()->orderBy('created_at')->limit(1)->one();
-        $firstYear = (int) (new \DateTime($firstTask->created_at))->format('Y');
+        $firstYear = date('Y');
+        if ($firstTask) {
+            $firstYear = (int) (new \DateTime($firstTask->created_at))->format('Y');
+        }
+
         $lastYear = date('Y') + 10;
         $years = [''];
         for ($i = $firstYear; $i < $lastYear; $i++) {

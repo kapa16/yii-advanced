@@ -24,7 +24,6 @@ class TaskController extends Controller
     private $service;
     private $request;
     private $tasks;
-    private $comments;
     private $images;
 
     public function __construct(
@@ -34,7 +33,6 @@ class TaskController extends Controller
         TaskRepository $tasks,
         TaskService $service,
         Request $request,
-        Comments $comments,
         Images $images,
         $config = [])
     {
@@ -43,7 +41,6 @@ class TaskController extends Controller
         $this->session = $session;
         $this->service = $service;
         $this->request = $request;
-        $this->comments = $comments;
         $this->images = $images;
     }
 
@@ -175,7 +172,7 @@ class TaskController extends Controller
         $form = new CommentForm();
 
         if ($form->load($this->request->post()) && $form->validate()) {
-            $this->comments->create($form->text, $task->id);
+            $this->service->createComment($form->text, $task->id, Yii::$app->user->id);
         }
         return $this->redirect(['update', 'id' => $task->id]);
     }

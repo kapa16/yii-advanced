@@ -1,7 +1,6 @@
 <?php
 
 use tasktracker\entities\task\Comments;
-use yii\helpers\Html;
 
 /** @var Comments $model */
 
@@ -21,4 +20,4 @@ $str = <<<card
 card;
 
 
-echo Html::a($str, ['task/update', 'id' => $model->id]);
+echo $str;

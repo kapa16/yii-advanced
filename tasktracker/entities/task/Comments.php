@@ -24,12 +24,14 @@ use yii\db\Expression;
  */
 class Comments extends ActiveRecord
 {
-    public function create(string $text, int $taskId): void
+    public static function create(string $text, int $taskId, int $author_id = null): self
     {
         $comment = new static();
         $comment->text = $text;
         $comment->task_id = $taskId;
-        $comment->save();
+        $comment->author_id = $author_id;
+        return $comment;
+
     }
 
     public function behaviors(): array
@@ -39,12 +41,6 @@ class Comments extends ActiveRecord
                 'class' => TimestampBehavior::class,
                 'value' => new Expression('NOW()'),
             ],
-            [
-                'class' => BlameableBehavior::class,
-                'createdByAttribute' => 'author_id',
-                'updatedByAttribute' => null,
-            ],
-
         ];
     }
 

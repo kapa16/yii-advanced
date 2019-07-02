@@ -25,6 +25,8 @@ use yii\db\Expression;
  *
  * @property Users $creator
  * @property Users $responsible
+ * @property ActiveQuery $comments
+ * @property ActiveQuery $images
  * @property Status $status
  *
  * @mixin TranslateBehavior

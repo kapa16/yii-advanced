@@ -2,6 +2,7 @@
 
 namespace common\components;
 
+use console\components\WsComments;
 use tasktracker\entities\task\Tasks;
 use tasktracker\services\TaskSubscribeService;
 use Yii;
@@ -23,6 +24,8 @@ class Bootstrap implements BootstrapInterface
         $container->setSingleton(TaskSubscribeService::class, [], [
             $app->params['senderEmail']
         ]);
+
+        $container->setSingleton(WsComments::class);
 
         Event::on(
             Tasks::class,
