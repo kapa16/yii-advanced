@@ -1,10 +1,12 @@
 <?php
 
+use common\widgets\Alert;
 use tasktracker\forms\task\TaskForm;
 use yii\helpers\Html;
 use yii\jui\DatePicker;
 use yii\web\View;
 use yii\widgets\ActiveForm;
+use yii\widgets\Pjax;
 
 /* @var $this View */
 /* @var $model TaskForm */
@@ -14,11 +16,22 @@ use yii\widgets\ActiveForm;
 
 <div class="task-form">
 
-    <?php $form = ActiveForm::begin(); ?>
+    <?php Pjax::begin() ?>
+
+    <?php $form = ActiveForm::begin(['options' => ['data' => ['pjax' => true]]]); ?>
+
+    <?= Alert::widget() ?>
 
     <div class="form-group">
-        <?= Html::submitButton($model->translateControl('save'), ['class' => 'btn btn-success']) ?>
-        <?= Html::a($model->translateControl('delete'), ['delete', 'id' => $model['id']], ['class' => 'btn btn-danger']) ?>
+        <?= Html::submitButton(
+            $model->translateControl('save'),
+            ['class' => 'btn btn-success']
+        ) ?>
+        <?= Html::a(
+            $model->translateControl('delete'),
+            ['delete', 'id' => $model['id']],
+            ['class' => 'btn btn-danger']
+        ) ?>
     </div>
 
     <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
@@ -59,5 +72,7 @@ use yii\widgets\ActiveForm;
     </div>
 
     <?php ActiveForm::end(); ?>
+
+    <?php Pjax::end() ?>
 
 </div>

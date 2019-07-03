@@ -19,7 +19,7 @@ class ImageForm extends Model
     public function rules(): array
     {
         return [
-            [['image'], 'image', 'extensions' => 'png, jpg'],
+            [['image'], 'image', 'extensions' => 'png, jpg, jpeg'],
         ];
     }
 

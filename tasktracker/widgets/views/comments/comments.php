@@ -8,6 +8,7 @@ use yii\web\JqueryAsset;
 use yii\web\View;
 use yii\widgets\ActiveForm;
 use yii\widgets\ListView;
+use yii\widgets\Pjax;
 
 /* @var $dataProvider ArrayDataProvider */
 /* @var $this View */
@@ -15,12 +16,14 @@ use yii\widgets\ListView;
 /* @var $task Tasks */
 
 $this->registerJsFile('/js/comments.js', [
-        'depends' => [JqueryAsset::class]
+    'depends' => [JqueryAsset::class]
 ]);
 
 ?>
 
     <h3>Comments</h3>
+
+<?php Pjax::begin() ?>
 
     <div>
         <?php $form = ActiveForm::begin([
@@ -29,6 +32,7 @@ $this->registerJsFile('/js/comments.js', [
                 'id' => 'comments_form',
                 'data-task-id' => $task->id,
                 'data-user-id' => Yii::$app->user->id,
+                'data' => ['pjax' => true]
             ]
         ]) ?>
         <?= $form->field($commentForm, 'text')->textarea([
@@ -48,3 +52,6 @@ $this->registerJsFile('/js/comments.js', [
         'class' => 'comments-list'
     ]
 ]) ?>
+
+<?php Pjax::end() ?>
+
