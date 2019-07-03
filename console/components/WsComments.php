@@ -5,7 +5,6 @@ namespace console\components;
 use Ratchet\ConnectionInterface;
 use Ratchet\MessageComponentInterface;
 use tasktracker\entities\task\Comments;
-use tasktracker\repositories\TaskRepository;
 use tasktracker\services\TaskService;
 
 class WsComments implements MessageComponentInterface
@@ -13,17 +12,14 @@ class WsComments implements MessageComponentInterface
     private $clients = [];
     private $clientTask = [];
     private $service;
-    private $tasks;
 
     /**
      * WsComments constructor.
      * @param TaskService $service
-     * @param TaskRepository $tasks
      */
-    public function __construct(TaskService $service, TaskRepository $tasks)
+    public function __construct(TaskService $service)
     {
         $this->service = $service;
-        $this->tasks = $tasks;
     }
 
 
@@ -32,9 +28,12 @@ class WsComments implements MessageComponentInterface
      * @param ConnectionInterface $conn The socket/connection that just connected to your application
      * @throws \Exception
      */
-    function onOpen(ConnectionInterface $conn)
+    public function onOpen(ConnectionInterface $conn): void
     {
-        echo 'Open connection ' . $conn->resourceId . PHP_EOL;
+        $queryString = $conn->httpRequest->getUri()->getQuery();
+        $taskId = explode('=', $queryString)[1];
+        $this->saveClient($conn, $taskId);
+        echo "Open connection {$conn->resourceId}\n";
     }
 
     /**
@@ -42,11 +41,14 @@ class WsComments implements MessageComponentInterface
      * @param ConnectionInterface $conn The socket/connection that is closing/closed
      * @throws \Exception
      */
-    function onClose(ConnectionInterface $conn)
+    public function onClose(ConnectionInterface $conn): void
     {
-        unset($this->clients[$this->clientTask[$conn->resourceId]][$conn->resourceId]);
-        unset($this->clientTask[$conn->resourceId]);
-        echo 'Close connection ' . $conn->resourceId . PHP_EOL;
+        $resourceId = $conn->resourceId;
+        unset(
+            $this->clients[$this->clientTask[$resourceId]][$resourceId],
+            $this->clientTask[$resourceId]
+        );
+        echo "Close connection {$resourceId}\n";
     }
 
     /**
@@ -56,9 +58,9 @@ class WsComments implements MessageComponentInterface
      * @param \Exception $e
      * @throws \Exception
      */
-    function onError(ConnectionInterface $conn, \Exception $e)
+    public function onError(ConnectionInterface $conn, \Exception $e): void
     {
-        echo 'Error' . $e->getMessage() . PHP_EOL;
+        echo "Error {$e->getMessage()}\n";
     }
 
     /**
@@ -67,23 +69,19 @@ class WsComments implements MessageComponentInterface
      * @param string $msg The message received
      * @throws \Exception
      */
-    function onMessage(ConnectionInterface $from, $msg)
+    public function onMessage(ConnectionInterface $from, $msg): void
     {
         $data = json_decode($msg, false);
-        if ($data->identity) {
-            $this->saveClient($from, $data);
-            return;
-        }
+
         $comment = $this->service->createComment($data->comment, $data->taskId, $data->userId);
         if ($comment) {
             $this->sendMessage($comment);
         }
     }
 
-    function saveClient(ConnectionInterface $from, $data)
+    public function saveClient(ConnectionInterface $from, int $taskId): void
     {
         $resourceId = $from->resourceId;
-        $taskId = $data->taskId;
 
         $this->clientTask[$resourceId] = $taskId;
         $this->clients[$taskId][$resourceId] = $from;
@@ -91,7 +89,7 @@ class WsComments implements MessageComponentInterface
         echo "Save connection {$resourceId} on task {$taskId}\n";
     }
 
-    function sendMessage(Comments $comment)
+    public function sendMessage(Comments $comment): void
     {
         $message = [
             'author' => $comment->author->username,
@@ -102,7 +100,7 @@ class WsComments implements MessageComponentInterface
          * @var ConnectionInterface $client
          */
         foreach ($this->clients[$comment->task_id] as $client) {
-            echo $client->resourceId . PHP_EOL;
+            echo "Send message to client {$client->resourceId}\n";
             $client->send(json_encode($message));
         }
     }

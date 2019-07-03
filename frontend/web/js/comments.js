@@ -17,17 +17,7 @@ $('#comments_form').on('beforeSubmit', function (event) {
 
 const form = document.getElementById('comments_form');
 
-const webSocket = new WebSocket('ws://yii.local:8080');
-
-
-webSocket.addEventListener('open', function (event) {
-    const identityData = JSON.stringify({
-        identity: 1,
-        taskId: form.dataset.taskId,
-        userId: form.dataset.userId,
-    });
-    webSocket.send(identityData);
-});
+const webSocket = new WebSocket(`ws://yii.local:8080?taskid=${form.dataset.taskId}`);
 
 webSocket.addEventListener('message', function (event) {
     "use strict";
