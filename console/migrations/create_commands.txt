@@ -2,3 +2,5 @@ php yii migrate/create create_users_table --fields=login:string(100):notNull,pas
 php yii migrate/create create_tasks_table --fields="name:string(100):notNull,description:text,status_id:integer:defaultValue(1):foreignKey(statuses),creator_id:integer:foreignKey(users),responsible_id:integer:foreignKey(users),deadline:datetime,created_at:datetime,updated_at:datetime"
 php yii migrate/create create_comments_table --fields="text:text:notNull,task_id:integer:foreignKey(tasks),author_id:integer:foreignKey(users),created_at:datetime,updated_at:datetime"
 php yii migrate/create create_task_images_table --fields="file:string:notNull,preview:string:notNull,task_id:integer:foreignKey(tasks),created_at:datetime"
+php yii migrate/create create_projects_table --fields="name:string(100):notNull,description:text,creator_id:integer:foreignKey(users),created_at:datetime,updated_at:datetime"
+php yii migrate/create add_project_id_column_to_tasks_table --fields="project_id:integer:notNull:foreignKey(projects)"
