@@ -9,23 +9,16 @@ use tasktracker\entities\project\Projects;
 /**
  * ProjectSearchForm represents the model behind the search form of `tasktracker\entities\project\Projects`.
  */
-class ProjectSearchForm extends Model
+class ProjectSearchForm extends Projects
 {
-    public $id;
-    public $name;
-    public $creator;
-    public $description;
-    public $created_at;
-    public $updated_at;
-
     /**
      * {@inheritdoc}
      */
     public function rules()
     {
         return [
-            [['id'], 'integer'],
-            [['name', 'description', 'creator', 'created_at', 'updated_at'], 'safe'],
+            [['id', 'creator_id'], 'integer'],
+            [['name', 'description', 'created_at', 'updated_at'], 'safe'],
         ];
     }
 
@@ -66,7 +59,7 @@ class ProjectSearchForm extends Model
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
-            'creator_id' => $this->creator,
+            'creator_id' => $this->creator_id,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ]);

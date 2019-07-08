@@ -89,6 +89,7 @@ class TaskService
         for ($i = 1; $i <= 10; $i++) {
             $project = Projects::create(
                 $faker->text(15),
+                $faker->numberBetween(1, 2),
                 $faker->text(),
             );
             $project->save();

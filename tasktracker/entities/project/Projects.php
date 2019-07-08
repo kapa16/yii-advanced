@@ -26,11 +26,12 @@ use yii\db\Expression;
  */
 class Projects extends ActiveRecord
 {
-    public static function create(string $name, string $description)
+    public static function create(string $name, int $creator_id, string $description = '')
     {
         $project = new static();
         $project->name = $name;
         $project->description = $description;
+        $project->creator_id = $creator_id;
         return $project;
     }
 
@@ -48,11 +49,6 @@ class Projects extends ActiveRecord
             [
                 'class' => TimestampBehavior::class,
                 'value' => new Expression('NOW()'),
-            ],
-            [
-                'class' => BlameableBehavior::class,
-                'createdByAttribute' => 'creator_id',
-                'updatedByAttribute' => null,
             ],
         ];
     }

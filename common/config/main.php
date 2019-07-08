@@ -1,7 +1,13 @@
 <?php
 
 use common\components\Bootstrap;
+use SonkoDmitry\Yii\TelegramBot\Component;
 use yii\i18n\PhpMessageSource;
+
+$params = array_merge(
+    require __DIR__ . '/params.php',
+    require __DIR__ . '/params-local.php'
+);
 
 return [
     'bootstrap' => ['bootstrap'],
@@ -23,6 +29,10 @@ return [
                     'class' => PhpMessageSource::class,
                 ]
             ]
+        ],
+        'bot' => [
+            'class' => Component::class,
+            'apiToken' => $params['telegramToken'],
         ],
     ],
 ];
