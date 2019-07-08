@@ -11,6 +11,7 @@ use yii\data\ActiveDataProvider;
 class TaskSearchForm extends Model
 {
     public $id;
+    public $project;
     public $name;
     public $status;
     public $responsible;
@@ -23,18 +24,18 @@ class TaskSearchForm extends Model
     {
         return [
             [['id', 'status'], 'integer'],
-            [['name', 'responsible', 'month', 'year', 'filterBy'], 'safe'],
+            [['project', 'name', 'responsible', 'month', 'year', 'filterBy'], 'safe'],
             [['deadline'], 'datetime'],
         ];
     }
 
     /**
      * @param array $params
+     * @param null $project_id
      * @return ActiveDataProvider
      * @throws \Exception
-     * @throws \Throwable
      */
-    public function search(array $params): ActiveDataProvider
+    public function search(array $params, $project_id = null): ActiveDataProvider
     {
         $query = Tasks::find();
 
@@ -58,6 +59,7 @@ class TaskSearchForm extends Model
         $query->andFilterWhere([
             'id' => $this->id,
             'status_id' => $this->status,
+            'project_id' => $project_id,
         ]);
 
         $query->andFilterWhere(['like', 'name', $this->name]);

@@ -40,6 +40,8 @@ use yii\widgets\Pjax;
         ) ?>
     </div>
 
+    <?= $form->field($model, 'project')->dropDownList($model->projectsList()) ?>
+
     <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
 
     <div class="row">

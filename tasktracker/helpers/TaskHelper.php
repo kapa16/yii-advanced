@@ -3,6 +3,7 @@
 namespace tasktracker\helpers;
 
 use common\models\Users;
+use tasktracker\entities\project\Projects;
 use tasktracker\entities\task\Status;
 use tasktracker\entities\task\Tasks;
 use DateInterval;
@@ -20,6 +21,11 @@ class TaskHelper
     public static function responsibleList(): array
     {
         return ArrayHelper::map(Users::find()->orderBy('username')->asArray()->all(), 'id', 'username');
+    }
+
+    public static function projectsList(): array
+    {
+        return ArrayHelper::map(Projects::find()->orderBy('created_at')->asArray()->all(), 'id', 'name');
     }
 
     /**

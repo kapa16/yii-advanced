@@ -3,8 +3,9 @@ return [
     'enablePrettyUrl' => true,
     'showScriptName' => false,
     'rules' => [
-        '/' => 'site/index',
+        '/' => 'project/index',
         '<action:(about|contact|login)>' => 'site/<action>',
+        '<controller>/project/<project_id:\d+>' => '<controller>/project',
         '<controller>/page/<page:\d+>/per-page/<per-page:\d+>' => '<controller>/index',
         '<controller>' => '<controller>/index',
         '<controller>/<id:\d+>' => '<controller>/view',
