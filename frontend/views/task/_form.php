@@ -11,12 +11,18 @@ use yii\widgets\Pjax;
 /* @var $this View */
 /* @var $model TaskForm */
 /* @var $form ActiveForm */
+/* @var $title string */
 
 ?>
 
-<div class="task-form">
+<?php Pjax::begin([
+    'enablePushState' => false,
+    'id' => 'task_update_form',
+]) ?>
 
-    <?php Pjax::begin() ?>
+<h1><?= Html::encode($title) ?></h1>
+
+<div class="task-form">
 
     <?php $form = ActiveForm::begin(['options' => ['data' => ['pjax' => true]]]); ?>
 
@@ -73,6 +79,6 @@ use yii\widgets\Pjax;
 
     <?php ActiveForm::end(); ?>
 
-    <?php Pjax::end() ?>
-
 </div>
+
+<?php Pjax::end() ?>

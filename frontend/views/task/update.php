@@ -20,10 +20,9 @@ $this->params['breadcrumbs'][] = 'Edit';
 ?>
 <div class="task-update">
 
-    <h1><?= Html::encode($this->title) ?></h1>
-
     <?= $this->render('_form', [
         'model' => $model,
+        'title' => $this->title,
     ]) ?>
 
     <div class="row">

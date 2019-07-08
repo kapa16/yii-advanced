@@ -13,9 +13,12 @@ use yii\widgets\Pjax;
 $dataProvider = $model->search($task);
 ?>
 
-<h3>Images</h3>
+<?php Pjax::begin([
+    'enablePushState' => false,
+    'id' => 'task_images'
+]) ?>
 
-<?php Pjax::begin(['enablePushState' => false]) ?>
+<h3>Images</h3>
 
 <?php
 $form = ActiveForm::begin([

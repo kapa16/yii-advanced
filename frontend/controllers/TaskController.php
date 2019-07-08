@@ -132,21 +132,25 @@ class TaskController extends Controller
 //            return $this->goBack();
 //        }
 
-        $formTask = new TaskForm();
-        $formTask->loadData($task);
+        $form = new TaskForm();
+        $form->loadData($task);
+        $formImage = new ImageForm();
 
-        if ($formTask->load($this->request->post()) && $formTask->validate()) {
+        if ($form->load($this->request->post()) && $form->validate()) {
             try {
-                $this->service->edit($task->id, $formTask);
+                $this->service->edit($task->id, $form);
                 $this->session->setFlash('success', 'Task updated successfully');
-//                return $this->redirect(['update', 'id' => $task->id]);
+//                return $this->render('_form', ['model' => $task]);
             } catch (\DomainException $e) {
                 Yii::$app->errorHandler->logException($e);
                 $this->session->setFlash('error', $e->getMessage());
             }
         }
-
-        return $this->renderUpdate($task, $formTask);
+        return $this->render('update', [
+            'model' => $form,
+            'task' => $task,
+            'imageForm' => $formImage,
+        ]);
     }
 
     public function actionDelete($id): Response
@@ -163,7 +167,8 @@ class TaskController extends Controller
         return $this->redirect(['index']);
     }
 
-    /** @deprecated
+    /**
+     * @deprecated
      * @param $id
      * @return Response
      */
@@ -178,7 +183,7 @@ class TaskController extends Controller
         return $this->redirect(['update', 'id' => $task->id]);
     }
 
-    public function actionUpload($id)
+    public function actionUpload($id): ?string
     {
         $task = $this->tasks->get($id);
         $formImage = new ImageForm();
@@ -187,10 +192,12 @@ class TaskController extends Controller
             $formImage->image = UploadedFile::getInstance($formImage, 'image');
             if ($formImage->upload()) {
                 $this->images->create($formImage, $task->id);
+                return $this->renderAjax('images/_images', [
+                    'task' => $task,
+                    'model' => $formImage
+                ]);
             }
         }
-        return $this->renderUpdate($task, null, $formImage);
-
     }
 
     public function actionFake(): Response
@@ -199,19 +206,4 @@ class TaskController extends Controller
         return $this->redirect(['index']);
     }
 
-    private function renderUpdate(Tasks $task, TaskForm $formTask = null, ImageForm $formImage = null)
-    {
-        if (!$formImage) {
-            $formImage = new ImageForm();
-        }
-        if (!$formTask) {
-            $formTask = new TaskForm();
-            $formTask->loadData($task);
-        }
-        return $this->render('update', [
-            'model' => $formTask,
-            'task' => $task,
-            'imageForm' => $formImage,
-        ]);
-    }
 }
