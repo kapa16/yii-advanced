@@ -4,6 +4,7 @@ namespace frontend\controllers;
 
 use tasktracker\entities\task\Comments;
 use tasktracker\entities\task\Images;
+use tasktracker\entities\task\Tasks;
 use tasktracker\forms\task\CommentForm;
 use tasktracker\forms\task\ImageForm;
 use tasktracker\forms\task\TaskForm;
@@ -131,25 +132,21 @@ class TaskController extends Controller
 //            return $this->goBack();
 //        }
 
-        $form = new TaskForm();
-        $form->loadData($task);
+        $formTask = new TaskForm();
+        $formTask->loadData($task);
 
-        if ($form->load($this->request->post()) && $form->validate()) {
+        if ($formTask->load($this->request->post()) && $formTask->validate()) {
             try {
-                $this->service->edit($task->id, $form);
+                $this->service->edit($task->id, $formTask);
                 $this->session->setFlash('success', 'Task updated successfully');
-                return $this->redirect(['view', 'id' => $task->id]);
+//                return $this->redirect(['update', 'id' => $task->id]);
             } catch (\DomainException $e) {
                 Yii::$app->errorHandler->logException($e);
                 $this->session->setFlash('error', $e->getMessage());
             }
         }
 
-        return $this->render('update', [
-            'model' => $form,
-            'task' => $task,
-            'imageForm' => new ImageForm(),
-        ]);
+        return $this->renderUpdate($task, $formTask);
     }
 
     public function actionDelete($id): Response
@@ -166,6 +163,10 @@ class TaskController extends Controller
         return $this->redirect(['index']);
     }
 
+    /** @deprecated
+     * @param $id
+     * @return Response
+     */
     public function actionComment($id): Response
     {
         $task = $this->tasks->get($id);
@@ -177,18 +178,18 @@ class TaskController extends Controller
         return $this->redirect(['update', 'id' => $task->id]);
     }
 
-    public function actionUpload($id): Response
+    public function actionUpload($id)
     {
         $task = $this->tasks->get($id);
-        $form = new ImageForm();
+        $formImage = new ImageForm();
 
-        if ($form->load($this->request->post())) {
-            $form->image = UploadedFile::getInstance($form, 'image');
-            if ($form->upload()) {
-                $this->images->create($form, $task->id);
+        if ($formImage->load($this->request->post())) {
+            $formImage->image = UploadedFile::getInstance($formImage, 'image');
+            if ($formImage->upload()) {
+                $this->images->create($formImage, $task->id);
             }
         }
-        return $this->redirect(['update', 'id' => $task->id]);
+        return $this->renderUpdate($task, null, $formImage);
 
     }
 
@@ -198,4 +199,19 @@ class TaskController extends Controller
         return $this->redirect(['index']);
     }
 
+    private function renderUpdate(Tasks $task, TaskForm $formTask = null, ImageForm $formImage = null)
+    {
+        if (!$formImage) {
+            $formImage = new ImageForm();
+        }
+        if (!$formTask) {
+            $formTask = new TaskForm();
+            $formTask->loadData($task);
+        }
+        return $this->render('update', [
+            'model' => $formTask,
+            'task' => $task,
+            'imageForm' => $formImage,
+        ]);
+    }
 }

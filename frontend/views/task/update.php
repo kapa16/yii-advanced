@@ -5,6 +5,7 @@ use tasktracker\forms\task\ImageForm;
 use tasktracker\forms\task\TaskForm;
 use tasktracker\widgets\CommentsWidget;
 use yii\helpers\Html;
+use yii\widgets\Pjax;
 
 /* @var $this yii\web\View */
 /* @var $model TaskForm */
@@ -27,15 +28,19 @@ $this->params['breadcrumbs'][] = 'Edit';
 
     <div class="row">
         <div class="col-md-6 comments">
+
             <?= CommentsWidget::widget([
                 'task' => $task
             ]) ?>
+
         </div>
         <div class="col-md-6">
+
             <?= $this->render('images/_images', [
                     'task' => $task,
                     'model' => $imageForm
             ]) ?>
+
         </div>
     </div>
 

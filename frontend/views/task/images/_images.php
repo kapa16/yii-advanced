@@ -5,6 +5,7 @@ use tasktracker\forms\task\ImageForm;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use yii\widgets\ListView;
+use yii\widgets\Pjax;
 
 /** @var Tasks $task */
 /** @var ImageForm $model */
@@ -14,10 +15,15 @@ $dataProvider = $model->search($task);
 
 <h3>Images</h3>
 
+<?php Pjax::begin(['enablePushState' => false]) ?>
+
 <?php
 $form = ActiveForm::begin([
     'action' => ['upload', 'id' => $task->id],
-    'options' => ['enctype' => 'multipart/form-data'],
+    'options' => [
+        'enctype' => 'multipart/form-data',
+        'data' => ['pjax' => true],
+    ],
 ]) ?>
 
 <?= $form->field($model, 'image')->fileInput()->label('') ?>
@@ -44,5 +50,8 @@ $form = ActiveForm::begin([
     </div>
 
 </div>
+
+<?php Pjax::end() ?>
+
 
 
