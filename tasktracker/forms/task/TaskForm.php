@@ -15,6 +15,7 @@ use yii\base\Model;
 class TaskForm extends Model
 {
     public $id;
+    public $project;
     public $name;
     public $status;
     public $deadline;
@@ -34,6 +35,7 @@ class TaskForm extends Model
     public function loadData(Tasks $model): void
     {
         $this->id = $model->id;
+        $this->project = $model->project;
         $this->name = $model->name;
         $this->status = $model->status;
         $this->deadline = $model->deadline;
@@ -47,8 +49,8 @@ class TaskForm extends Model
     public function rules(): array
     {
         return [
-            [['name', 'status', 'responsible', 'deadline'], 'required'],
-            [['responsible', 'status'], 'integer'],
+            [['project', 'name', 'status', 'responsible', 'deadline'], 'required'],
+            [['project', 'responsible', 'status'], 'integer'],
             ['description', 'string'],
             ['deadline', 'date'],
             [['creator', 'created_at', 'updated_at'], 'safe'],
@@ -72,5 +74,10 @@ class TaskForm extends Model
     public function responsibleList(): array
     {
         return TaskHelper::responsibleList();
+    }
+
+    public function projectsList(): array
+    {
+        return TaskHelper::projectsList();
     }
 }

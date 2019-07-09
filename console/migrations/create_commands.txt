@@ -4,3 +4,5 @@ php yii migrate/create create_comments_table --fields="text:text:notNull,task_id
 php yii migrate/create create_task_images_table --fields="file:string:notNull,preview:string:notNull,task_id:integer:foreignKey(tasks),created_at:datetime"
 php yii migrate/create create_projects_table --fields="name:string(100):notNull,description:text,creator_id:integer:foreignKey(users),created_at:datetime,updated_at:datetime"
 php yii migrate/create add_project_id_column_to_tasks_table --fields="project_id:integer:notNull:foreignKey(projects)"
+php yii migrate/create create_telegram_subscribe_table --fields="telegram_id:integer:notNull,target:string(100)"
+php yii migrate/create add_telegram_id_column_to_users_table --fields="telegram_id:integer"

@@ -58,6 +58,18 @@ class TaskController extends Controller
         ]);
     }
 
+    public function actionProject($project_id): string
+    {
+        $searchModel = new TaskSearchForm();
+        $dataProvider = $searchModel->search($this->request->post(), $project_id);
+        $this->service->cacheDataProvider($dataProvider);
+
+        return $this->render('index', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+        ]);
+    }
+
     public function behaviors()
     {
         return [

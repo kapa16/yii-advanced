@@ -4,6 +4,7 @@ namespace tasktracker\entities\task;
 
 use common\models\Users;
 use tasktracker\behaviors\TranslateBehavior;
+use tasktracker\entities\project\Projects;
 use yii\behaviors\BlameableBehavior;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveQuery;
@@ -23,11 +24,13 @@ use yii\db\Expression;
  * @property string $created_at
  * @property string $updated_at
  *
+ * @property Projects $project
  * @property Users $creator
  * @property Users $responsible
  * @property ActiveQuery $comments
  * @property ActiveQuery $images
  * @property Status $status
+ * @property int $project_id [int(11)]
  *
  * @mixin TranslateBehavior
  */
@@ -35,14 +38,16 @@ class Tasks extends ActiveRecord
 {
 
     public static function create(
-        $name,
-        $description,
-        $status_id,
-        $responsible_id,
-        $deadline
+        string $name,
+        string $description,
+        int $status_id,
+        int $responsible_id,
+        $deadline,
+        int $project_id
     ): self
     {
         $task = new static();
+        $task->project_id = $project_id;
         $task->name = $name;
         $task->description = $description;
         $task->status_id = $status_id;
@@ -51,8 +56,9 @@ class Tasks extends ActiveRecord
         return $task;
     }
 
-    public function edit($name, $description, $status_id, $responsible_id, $deadline): void
+    public function edit($name, $description, $status_id, $responsible_id, $deadline, $project_id): void
     {
+        $this->project_id = $project_id;
         $this->name = $name;
         $this->description = $description;
         $this->status_id = $status_id;
@@ -106,5 +112,10 @@ class Tasks extends ActiveRecord
     public function getImages(): ActiveQuery
     {
         return $this->hasMany(Images::class, ['task_id' => 'id']);
+    }
+
+    public function getProject(): ActiveQuery
+    {
+        return $this->hasOne(Projects::class, ['id' => 'project_id']);
     }
 }

@@ -29,7 +29,9 @@
     "guzzlehttp/guzzle": "^6.3",
     "facebook/webdriver": "^1.7",
     "cboden/ratchet": "^0.4.1",
-    "ext-json": "*"
+    "ext-json": "*",
+    "sonko-dmitry/yii2-telegram-bot-api": "^1.0",
+    "ext-curl": "*"
   },
   "require-dev": {
     "yiisoft/yii2-debug": "~2.1.0",
