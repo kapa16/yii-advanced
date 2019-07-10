@@ -4,6 +4,7 @@ namespace common\components;
 
 use console\components\TelegramCommands;
 use console\components\WsComments;
+use SonkoDmitry\Yii\TelegramBot\Component;
 use tasktracker\entities\project\Projects;
 use tasktracker\entities\task\Tasks;
 use tasktracker\services\ProjectSubscribe;
@@ -24,6 +25,15 @@ class Bootstrap implements BootstrapInterface
             return $app->mailer;
         });
 
+         $container->setSingleton(Component::class, static function () use ($app) {
+             $bot = new Component(['apiToken' => $app->params['telegramToken']]);
+             $bot->setCurlOption(CURLOPT_PROXYTYPE, CURLPROXY_SOCKS5);
+             $bot->setCurlOption(CURLOPT_PROXY, $app->params['proxyServer']);
+             $bot->setCurlOption(CURLOPT_PROXYUSERPWD, $app->params['proxyAuth']);
+
+            return $bot;
+        });
+
         $container->setSingleton(TaskSubscribeService::class, [], [
             $app->params['senderEmail']
         ]);
@@ -35,23 +45,18 @@ class Bootstrap implements BootstrapInterface
         Event::on(
             Tasks::class,
             Tasks::EVENT_AFTER_INSERT,
-            function ($event) {
-                Yii::warning($event);
-                exit;
+            function ($event) use ($container) {
+                $container->get(TaskSubscribeService::class)
+                    ->sendCreateHandler(TelegramCommands::SUBSCRIBE_TASK_CREATE, $event->sender);
             }
-//            [$container->get(TaskSubscribeService::class), 'SendCreateHandler']
         );
 
         Event::on(
             Projects::class,
             Projects::EVENT_AFTER_INSERT,
             function ($event) use ($container) {
-                var_dump($event);
-                exit;
-                Yii::warning('начало вычисления среднего дохода');
-                $container->get(
-                    TaskSubscribeService::class)
-                    ->SendCreateHandler(TelegramCommands::SUBSCRIBE_PROJECT_CREATE, $event->sender);
+                $container->get(ProjectSubscribe::class)
+                    ->sendCreateHandler(TelegramCommands::SUBSCRIBE_PROJECT_CREATE, $event->sender);
             }
         );
 

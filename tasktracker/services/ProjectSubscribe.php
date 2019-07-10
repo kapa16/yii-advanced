@@ -1,32 +1,23 @@
 <?php
 
-
 namespace tasktracker\services;
 
-
-use tasktracker\entities\telegram\TelegramSubscribe;
+use tasktracker\entities\project\Projects;
+use tasktracker\notification\TelegramNotification;
 
 class ProjectSubscribe
 {
-    private $bot;
+    private $telegram;
 
-    public function __construct()
+    public function __construct(TelegramNotification $telegram)
     {
-        $this->bot = \Yii::$app->bot;
+        $this->telegram = $telegram;
     }
 
-    private function SendCreateHandler($target)
+    public function sendCreateHandler($target, Projects $project): void
     {
-        $subscriptions =  TelegramSubscribe::find()
-            ->where(['target' => $target])
-            ->all();
+        $message = "Create new project: {$project->name}";
 
-        $message = "Create new project: ";
-
-        foreach ($subscriptions as $message => $recipients) {
-            foreach ($recipients as $recipient) {
-                $this->bot->sendMessage($recipient->telegram_id, $message);
-            }
-        }
+        $this->telegram->send($message, $target);
     }
 }

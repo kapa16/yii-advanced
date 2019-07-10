@@ -4,11 +4,11 @@ namespace console\controllers;
 
 use common\models\Users;
 use console\components\TelegramCommands;
+use Exception;
 use SonkoDmitry\Yii\TelegramBot\Component;
 use tasktracker\entities\telegram\TelegramOffset;
 use TelegramBot\Api\Types\Message;
 use TelegramBot\Api\Types\Update;
-use yii\base\InvalidValueException;
 use yii\console\Controller;
 
 class TelegramController extends Controller
@@ -19,13 +19,10 @@ class TelegramController extends Controller
     private $telegram;
     private $offset = 0;
 
-    public function __construct($id, $module, TelegramCommands $telegram, Users $users, $config = [])
+    public function __construct($id, $module, TelegramCommands $telegram, Users $users, Component $bot, $config = [])
     {
         parent::__construct($id, $module, $config);
-        $this->bot = \Yii::$app->bot;
-        $this->bot->setCurlOption(CURLOPT_PROXYTYPE, CURLPROXY_SOCKS5);
-        $this->bot->setCurlOption(CURLOPT_PROXY, \Yii::$app->params['proxyServer']);
-        $this->bot->setCurlOption(CURLOPT_PROXYUSERPWD, \Yii::$app->params['proxyAuth']);
+        $this->bot = $bot;
         $this->telegram = $telegram;
         $this->users = $users;
     }
@@ -81,7 +78,7 @@ class TelegramController extends Controller
         $command = $params[0];
         try {
             $response = $this->telegram->execute($command, $params, $message, $user);
-        } catch (InvalidValueException $e) {
+        } catch (Exception $e) {
             $response = $e->getMessage();
         }
         $this->bot->sendMessage($message->getFrom()->getId(), $response);

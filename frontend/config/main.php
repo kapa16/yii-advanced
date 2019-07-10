@@ -15,10 +15,10 @@ $urlManager = require __DIR__ . './url-manager.php';
 return [
     'id' => 'app-frontend',
     'basePath' => dirname(__DIR__),
-    'bootstrap' => ['log', 'bootstrap'],
+    'bootstrap' => ['log', 'bootstrapWeb'],
     'controllerNamespace' => 'frontend\controllers',
     'components' => [
-        'bootstrap' => [
+        'bootstrapWeb' => [
             'class' => BootstrapWeb::class
         ],
         'request' => [

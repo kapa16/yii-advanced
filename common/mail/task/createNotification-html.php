@@ -12,7 +12,7 @@ use yii\web\View;
 $taskLink = Yii::$app->urlManager->createAbsoluteUrl(['task/view', 'id' => $task->id]);
 ?>
 <div>
-    <p>Hello <?= Html::encode($user->name . ' ' . $user->last_name) ?>,</p>
+    <p>Hello <?= Html::encode($user->username) ?>,</p>
 
     <p>Yuo have new task: <?= Html::encode($task->name) ?></p>
 

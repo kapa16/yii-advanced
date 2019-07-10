@@ -29,7 +29,7 @@ class TaskController extends Controller
         $tasks = $this->tasks->findIncompleteByDeadline($from, $to->add($interval));
 
         foreach ($tasks as $task) {
-            $this->subscribe->SendDeadline($task, $daysLeft);
+            $this->subscribe->sendDeadline($task, $daysLeft);
         }
     }
 }

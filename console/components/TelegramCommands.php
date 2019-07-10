@@ -58,7 +58,7 @@ class TelegramCommands
 
         $project = Projects::create($projectName, $this->user->id);
         if (!$project->save()) {
-            return 'Error creating project';
+            throw new \DomainException( 'Error creating project');
         }
         $this->setSubscriptions(self::SUBSCRIBE_PROJECT_CREATE, "Create new project: {$projectName}");
         return 'Project created successfully';
@@ -76,19 +76,32 @@ class TelegramCommands
 
     private function createSubscribe($target)
     {
+        $telegramId = $this->message->getFrom()->getId();
+        $this->subscribeExist($telegramId, $target);
+
         $subscribe = TelegramSubscribe::create(
             $this->message->getFrom()->getId(),
             $target
         );
         if (!$subscribe->save()) {
-            return 'Error creating subscribe';
+            throw new \DomainException( 'Error creating subscribe');
         }
         return 'Subscribe created successfully';
     }
 
-    public function getSubscriptions()
+    public function getSubscriptions(): array
     {
         return $this->subscriptions;
     }
 
+    private function subscribeExist($telegramId, $target): void
+    {
+        $subscribe = TelegramSubscribe::findOne([
+            'telegram_id' => $telegramId,
+            'target' => $target,
+        ]);
+        if ($subscribe) {
+            throw new \DomainException('you are already subscribed');
+        }
+    }
 }
