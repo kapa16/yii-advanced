@@ -43,6 +43,8 @@ class TelegramController extends Controller
         foreach ($updates as $update) {
             $message = $update->getMessage();
             $telegramId = $message->getFrom()->getId();
+            $this->updateOffset($update);
+
             if (!$user = $this->users::findByTelegramId($telegramId)) {
                 if (!$user = $this->users::findByUsername($message->getText())) {
                     $this->bot->sendMessage($telegramId, 'Enter your username on task-tracker');
@@ -51,12 +53,9 @@ class TelegramController extends Controller
                 $user->telegram_id = $telegramId;
                 $user->save();
             }
-            $this->updateOffset($update);
             $this->processCommand($message, $user);
         }
-        $this->sendSubscriptions();
     }
-
 
     private function getOffset()
     {
@@ -88,13 +87,4 @@ class TelegramController extends Controller
         $this->bot->sendMessage($message->getFrom()->getId(), $response);
     }
 
-    private function sendSubscriptions()
-    {
-        $subscriptions = $this->telegram->getSubscriptions();
-        foreach ($subscriptions as $message => $recipients) {
-            foreach ($recipients as $recipient) {
-                $this->bot->sendMessage($recipient->telegram_id, $message);
-            }
-        }
-    }
 }

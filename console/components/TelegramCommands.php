@@ -10,8 +10,8 @@ use yii\base\InvalidValueException;
 
 class TelegramCommands
 {
-    private const SUBSCRIBE_PROJECT_CREATE = '/subscribe_project_create';
-    private const SUBSCRIBE_TASK_CREATE = '/subscribe_task_create';
+    public const SUBSCRIBE_PROJECT_CREATE = '/subscribe_project_create';
+    public const SUBSCRIBE_TASK_CREATE = '/subscribe_task_create';
 
     /** @var Message */
     private $message;
@@ -89,13 +89,6 @@ class TelegramCommands
     public function getSubscriptions()
     {
         return $this->subscriptions;
-    }
-
-    private function setSubscriptions($target, $msg)
-    {
-        $this->subscriptions[$msg] = TelegramSubscribe::find()
-            ->where(['target' => $target])
-            ->all();
     }
 
 }
