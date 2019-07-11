@@ -42,6 +42,7 @@ class Tasks extends ActiveRecord
         string $description,
         int $status_id,
         int $responsible_id,
+        int $creator_id,
         $deadline,
         int $project_id
     ): self
@@ -52,23 +53,48 @@ class Tasks extends ActiveRecord
         $task->description = $description;
         $task->status_id = $status_id;
         $task->responsible_id = $responsible_id;
+        $task->creator_id = $creator_id;
         $task->deadline = $deadline;
         return $task;
     }
 
-    public function edit($name, $description, $status_id, $responsible_id, $deadline, $project_id): void
+    public function edit(
+        string $name,
+        string $description,
+        int $status_id,
+        int $responsible_id,
+        int $creator_id,
+        $deadline,
+        int $project_id
+    ): void
     {
         $this->project_id = $project_id;
         $this->name = $name;
         $this->description = $description;
         $this->status_id = $status_id;
         $this->responsible_id = $responsible_id;
+        $this->creator_id = $creator_id;
         $this->deadline = $deadline;
     }
 
     public static function tableName(): string
     {
         return 'tasks';
+    }
+
+    public function rules()
+    {
+        return [
+            [['name', 'project_id'], 'required'],
+            [['description'], 'string'],
+            [['status_id', 'creator_id', 'responsible_id', 'project_id'], 'integer'],
+            [['deadline', 'created_at', 'updated_at'], 'safe'],
+            [['name'], 'string', 'max' => 100],
+            [['creator_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::class, 'targetAttribute' => ['creator_id' => 'id']],
+            [['project_id'], 'exist', 'skipOnError' => true, 'targetClass' => Projects::class, 'targetAttribute' => ['project_id' => 'id']],
+            [['responsible_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::class, 'targetAttribute' => ['responsible_id' => 'id']],
+            [['status_id'], 'exist', 'skipOnError' => true, 'targetClass' => Status::class, 'targetAttribute' => ['status_id' => 'id']],
+        ];
     }
 
     public function behaviors(): array
@@ -78,11 +104,11 @@ class Tasks extends ActiveRecord
                 'class' => TimestampBehavior::class,
                 'value' => new Expression('NOW()'),
             ],
-            [
-                'class' => BlameableBehavior::class,
-                'createdByAttribute' => 'creator_id',
-                'updatedByAttribute' => null,
-            ],
+//            [
+//                'class' => BlameableBehavior::class,
+//                'createdByAttribute' => 'creator_id',
+//                'updatedByAttribute' => null,
+//            ],
             [
                 'class' => TranslateBehavior::class
             ],
