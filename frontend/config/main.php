@@ -1,5 +1,8 @@
 <?php
 
+use yii\web\JsonParser;
+use yii\log\FileTarget;
+use frontend\modules\v1\Module;
 use common\components\BootstrapWeb;
 use common\models\Users;
 use yii\web\Session;
@@ -17,6 +20,11 @@ return [
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log', 'bootstrapWeb'],
     'controllerNamespace' => 'frontend\controllers',
+    'modules' => [
+        'v1' => [
+            'class' => Module::class,
+        ],
+    ],
     'components' => [
         'bootstrapWeb' => [
             'class' => BootstrapWeb::class
@@ -24,6 +32,9 @@ return [
         'request' => [
             'csrfParam' => '_csrf-frontend',
             'cookieValidationKey' => $params['cookieValidationKey'],
+            'parsers' => [
+                'application/json' => JsonParser::class,
+            ]
         ],
         'user' => [
             'identityClass' => Users::class,
@@ -47,7 +58,7 @@ return [
             'traceLevel' => YII_DEBUG ? 3 : 0,
             'targets' => [
                 [
-                    'class' => 'yii\log\FileTarget',
+                    'class' => FileTarget::class,
                     'levels' => ['error', 'warning'],
                 ],
             ],

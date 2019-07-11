@@ -18,6 +18,7 @@ class TaskService
     private $statuses;
     private $users;
     private $projects;
+    private $user;
 
     /**
      * TaskService constructor.
@@ -37,6 +38,7 @@ class TaskService
         $this->statuses = $statuses;
         $this->users = $users;
         $this->projects = $projects;
+        $this->user = \Yii::$app->user;
     }
 
     public function create(TaskForm $form): Tasks
@@ -50,6 +52,7 @@ class TaskService
             $form->description,
             $status->id,
             $responsible->id,
+            $this->user->id,
             date('Y.m.d',strtotime($form->deadline)),
             $project->id
         );
@@ -69,6 +72,7 @@ class TaskService
             $form->description,
             $status->id,
             $responsible->id,
+            $this->user->id,
             date('Y.m.d',strtotime($form->deadline)),
             $project->id
         );
@@ -100,6 +104,7 @@ class TaskService
                 $faker->text(15),
                 $faker->text(),
                 $faker->numberBetween(1, 7),
+                $faker->numberBetween(1, 2),
                 $faker->numberBetween(1, 2),
                 date('Y-m-d H:i:s'),
                 $faker->numberBetween(1, 10),
