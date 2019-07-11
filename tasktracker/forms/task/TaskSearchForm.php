@@ -60,6 +60,7 @@ class TaskSearchForm extends Model
             'id' => $this->id,
             'status_id' => $this->status,
             'project_id' => $project_id,
+            'responsible_id' => $this->responsible,
         ]);
 
         $query->andFilterWhere(['like', 'name', $this->name]);
