@@ -25,9 +25,9 @@ class TaskRepository
         return $task;
     }
 
-    public function save(Tasks $product): void
+    public function save(Tasks $tasks): void
     {
-        if (!$product->save()) {
+        if (!$tasks->save()) {
             throw new \RuntimeException('Saving error.');
         }
     }
