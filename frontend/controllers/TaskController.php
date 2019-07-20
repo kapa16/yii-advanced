@@ -2,9 +2,7 @@
 
 namespace frontend\controllers;
 
-use tasktracker\entities\task\Comments;
 use tasktracker\entities\task\Images;
-use tasktracker\entities\task\Tasks;
 use tasktracker\forms\task\CommentForm;
 use tasktracker\forms\task\ImageForm;
 use tasktracker\forms\task\TaskForm;
@@ -12,7 +10,6 @@ use tasktracker\forms\task\TaskSearchForm;
 use tasktracker\repositories\TaskRepository;
 use tasktracker\services\TaskService;
 use Yii;
-use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\Request;
 use yii\web\Response;

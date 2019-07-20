@@ -53,7 +53,7 @@ class TaskService
             $status->id,
             $responsible->id,
             $this->user->id,
-            date('Y.m.d',strtotime($form->deadline)),
+            date('Y.m.d', strtotime($form->deadline)),
             $project->id
         );
         $this->tasks->save($task);
@@ -73,7 +73,7 @@ class TaskService
             $status->id,
             $responsible->id,
             $this->user->id,
-            date('Y.m.d',strtotime($form->deadline)),
+            date('Y.m.d', strtotime($form->deadline)),
             $project->id
         );
         $this->tasks->save($task);
@@ -94,7 +94,7 @@ class TaskService
             $project = Projects::create(
                 $faker->text(15),
                 $faker->numberBetween(1, 2),
-                $faker->text(),
+                $faker->text()
             );
             $project->save();
         }
@@ -107,8 +107,8 @@ class TaskService
                 $faker->numberBetween(1, 2),
                 $faker->numberBetween(1, 2),
                 date('Y-m-d H:i:s'),
-                $faker->numberBetween(1, 10),
-                );
+                $faker->numberBetween(1, 10)
+            );
             $this->tasks->save($task);
         }
     }
@@ -116,9 +116,8 @@ class TaskService
     public function cacheDataProvider($dataProvider): void
     {
         $dependency = new DbDependency;
-        $dependency->sql = <<<sql
-                SELECT `updated_at` FROM {$this->tasks->tableName()} ORDER BY `updated_at` DESC LIMIT 1
-            sql;
+        $tableName = $this->tasks->tableName();
+        $dependency->sql = "SELECT {$tableName}.`updated_at` FROM {$tableName} ORDER BY `updated_at` DESC LIMIT 1";
         Tasks::getDb()->cache(function ($db) use ($dataProvider) {
             return $dataProvider->prepare();
         }, 60, $dependency);
