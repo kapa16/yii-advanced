@@ -28,7 +28,16 @@ apt-get update
 apt-get upgrade -y
 
 info "Install additional software"
-apt-get install -y php7.3-curl php7.3-cli php7.3-intl php7.3-mysqlnd php7.3-gd php7.3-fpm php7.3-mbstring php7.3-xml unzip nginx mysql-server-5.7 php.xdebug
+apt-get install -y php7.3-curl php7.3-cli php7.3-intl php7.3-mysqlnd php7.3-gd php7.3-fpm php7.3-mbstring php7.3-xml unzip nginx mysql-server-5.7 php.xdebug php7.3-dev
+
+info "Install XHPROF"
+git clone https://github.com/longxinH/xhprof.git /var/www/xhprof
+cd /var/www/xhprof/extension/
+sudo phpize
+sudo ./configure --with-php-config=/usr/bin/php-config
+sudo make && sudo make install
+mkdir /var/tmp/xhprof
+sudo chmod 777 /var/tmp/xhprof
 
 info "Configure MySQL"
 sed -i "s/.*bind-address.*/bind-address = 0.0.0.0/" /etc/mysql/mysql.conf.d/mysqld.cnf
